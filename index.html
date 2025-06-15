@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnPath - Master Engineering, Step by Step</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s forwards;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s 0.3s forwards;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            opacity: 0;
+            animation: fadeInUp 1s 0.6s forwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 1s forwards;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            margin-top: 2rem;
+            padding: 3rem 0;
+            min-height: 80vh;
+        }
+
+        .roadmap-selector {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .roadmap-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .roadmap-content {
+            display: none;
+        }
+
+        .roadmap-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .roadmap-path {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .topic-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .topic-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        .topic-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .expand-icon {
+            font-size: 1.5rem;
+            color: #667eea;
+            transition: transform 0.3s;
+        }
+
+        .expand-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .topic-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+
+        .topic-details.expanded {
+            max-height: 2000px; /* Adjust as needed */
+        }
+
+        .resources {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .resource-type {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .pdf { background-color: #ff6b6b; color: white; }
+        .video { background-color: #4ecdc4; color: white; }
+        .notes { background-color: #45b7d1; color: white; }
+        .course { background-color: #9b59b6; color: white; }
+        .practice { background-color: #e67e22; color: white; }
+
+        .explanation {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border-left: 4px solid #28a745;
+            text-align: left;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-out;
+        }
+
+        .specialization-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .specialization-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .specialization-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+        
+        .specialization-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .specialization-desc {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .streams-container {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .streams-container.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: background 0.3s;
+            text-align: left;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .roadmap-tabs { flex-direction: column; align-items: center; }
+            .resources { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">LearnPath</a>
+            <ul class="nav-links">
+                <li><a href="#roadmaps">Roadmaps</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Master Engineering, Step by Step</h1>
+            <p>Structured learning roadmaps with curated materials to eliminate confusion and save your time</p>
+            <button class="cta-button" onclick="scrollToRoadmaps()">Start Learning</button>
+        </div>
+    </section>
+
+    <div class="stats container">
+        <div class="stat-card" style="animation-delay: 0.2s;">
+            <div class="stat-number">1000+</div>
+            <div>Curated Resources</div>
+        </div>
+        <div class="stat-card" style="animation-delay: 0.4s;">
+            <div class="stat-number">25</div>
+            <div>Learning Paths</div>
+        </div>
+        <div class="stat-card" style="animation-delay: 0.6s;">
+            <div class="stat-number">50K+</div>
+            <div>Happy Learners</div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="container">
+            <section id="roadmaps" class="roadmap-selector">
+                <h2 style="margin-bottom: 2rem; font-size: 2.5rem; color: #333;">Choose Your Engineering Major</h2>
+                
+                <div class="roadmap-tabs">
+                    <div class="tab active" onclick="showRoadmap('computer-science')">Computer Science</div>
+                    <div class="tab" onclick="showRoadmap('electrical')">Electrical Engineering</div>
+                    <div class="tab" onclick="showRoadmap('mechanical')">Mechanical Engineering</div>
+                    <div class="tab" onclick="showRoadmap('civil')">Civil Engineering</div>
+                    <div class="tab" onclick="showRoadmap('chemical')">Chemical Engineering</div>
+                </div>
+
+                <div id="computer-science" class="roadmap-content active">
+                    <div class="specialization-grid">
+                        <div class="specialization-card" onclick="showStream('cs-fundamentals')">
+                            <div class="specialization-title">🔤 CS Fundamentals</div>
+                            <div class="specialization-desc">Programming basics, OOP, algorithms, and core computer science concepts</div>
+                        </div>
+                        <div class="specialization-card" onclick="showStream('web-development')">
+                            <div class="specialization-title">🌐 Web Development</div>
+                            <div class="specialization-desc">Frontend, backend, databases, and full-stack development</div>
+                        </div>
+                        <div class="specialization-card" onclick="showStream('data-structures')">
+                            <div class="specialization-title">📊 Data Structures & Algorithms</div>
+                            <div class="specialization-desc">Arrays, trees, graphs, sorting, searching, and algorithm analysis</div>
+                        </div>
+                        <div class="specialization-card" onclick="showStream('ai-ml')">
+                            <div class="specialization-title">🤖 AI & Machine Learning</div>
+                            <div class="specialization-desc">ML algorithms, deep learning, NLP, computer vision, and MLOps</div>
+                        </div>
+                        <div class="specialization-card" onclick="showStream('cybersecurity')">
+                            <div class="specialization-title">🔒 Cybersecurity</div>
+                            <div class="specialization-desc">Network security, ethical hacking, digital forensics, and incident response</div>
+                        </div>
+                        <div class="specialization-card" onclick="showStream('system-design')">
+                            <div class="specialization-title">🏗️ System Design</div>
+                            <div class="specialization-desc">Scalable systems, microservices, databases, and distributed computing</div>
+                        </div>
+                    </div>
+
+                    <!-- CS Fundamentals Stream -->
+                    <div id="cs-fundamentals-stream" class="streams-container">
+                        <button class="back-button" onclick="backToMajor('computer-science')">← Back to Computer Science</button>
+                        <h3 style="color: #333; margin-bottom: 2rem;">CS Fundamentals Learning Path</h3>
+                        <div class="roadmap-path">
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)">
+                                    <div class="topic-title">1. Programming Fundamentals</div>
+                                    <div class="expand-icon">▼</div>
+                                </div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation">
+                                        <h4>What you'll learn:</h4>
+                                        <p>Master the fundamentals of programming including variables, data types, control structures, functions, and basic problem-solving techniques. Learn multiple programming languages and understand programming paradigms.</p>
+                                    </div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type pdf">PDF</span><h4>Introduction to Programming</h4><p>Comprehensive guide covering basic programming concepts with examples in Python, Java, and C++.</p></div>
+                                        <div class="resource-card"><span class="resource-type video">VIDEO</span><h4>CS50 - Introduction to Computer Science</h4><p>Harvard's renowned course covering programming fundamentals and computational thinking.</p></div>
+                                        <div class="resource-card"><span class="resource-type notes">NOTES</span><h4>Programming Basics Cheat Sheet</h4><p>Quick reference guide with syntax and concepts for popular programming languages.</p></div>
+                                        <div class="resource-card"><span class="resource-type practice">PRACTICE</span><h4>Coding Exercises - Beginner</h4><p>100+ coding problems to practice basic programming concepts and logic building.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)">
+                                    <div class="topic-title">2. Object-Oriented Programming</div>
+                                    <div class="expand-icon">▼</div>
+                                </div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 70%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation">
+                                        <h4>What you'll learn:</h4>
+                                        <p>Understand classes, objects, inheritance, polymorphism, encapsulation, and abstraction. Learn to design and implement object-oriented solutions to complex problems using design patterns.</p>
+                                    </div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type pdf">PDF</span><h4>OOP Principles and Design Patterns</h4><p>Deep dive into object-oriented design patterns, SOLID principles, and best practices.</p></div>
+                                        <div class="resource-card"><span class="resource-type video">VIDEO</span><h4>Object-Oriented Programming in Java</h4><p>Complete video series covering OOP concepts with practical examples and projects.</p></div>
+                                        <div class="resource-card"><span class="resource-type course">COURSE</span><h4>Design Patterns Masterclass</h4><p>Interactive course covering 23 classic design patterns with real-world implementations.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)">
+                                    <div class="topic-title">3. Computer Architecture & Systems</div>
+                                    <div class="expand-icon">▼</div>
+                                </div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation">
+                                        <h4>What you'll learn:</h4>
+                                        <p>Understand how computers work at the hardware level including CPU, memory, storage, and I/O systems. Learn assembly language, computer organization, and system performance optimization.</p>
+                                    </div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type pdf">PDF</span><h4>Computer Systems: A Programmer's Perspective</h4><p>Comprehensive textbook covering computer architecture from a programmer's viewpoint.</p></div>
+                                        <div class="resource-card"><span class="resource-type video">VIDEO</span><h4>MIT 6.004 - Computation Structures</h4><p>MIT's computer architecture course covering digital logic and computer organization.</p></div>
+                                        <div class="resource-card"><span class="resource-type practice">PRACTICE</span><h4>Assembly Language Programming</h4><p>Hands-on exercises in x86 assembly language and low-level programming.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)">
+                                    <div class="topic-title">4. Operating Systems</div>
+                                    <div class="expand-icon">▼</div>
+                                </div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 45%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation">
+                                        <h4>What you'll learn:</h4>
+                                        <p>Master OS concepts including processes, threads, memory management, file systems, and synchronization. Learn Linux/Unix commands and system programming.</p>
+                                    </div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type pdf">PDF</span><h4>Operating System Concepts</h4><p>Classic textbook covering all major OS concepts with practical examples.</p></div>
+                                        <div class="resource-card"><span class="resource-type video">VIDEO</span><h4>UC Berkeley CS162 - Operating Systems</h4><p>Complete operating systems course with lectures and programming assignments.</p></div>
+                                        <div class="resource-card"><span class="resource-type practice">PRACTICE</span><h4>Linux System Administration</h4><p>Practical exercises in Linux commands, shell scripting, and system management.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Web Development Stream -->
+                    <div id="web-development-stream" class="streams-container">
+                        <button class="back-button" onclick="backToMajor('computer-science')">← Back to Computer Science</button>
+                        <h3 style="color: #333; margin-bottom: 2rem;">Web Development Learning Path</h3>
+                        <div class="roadmap-path">
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)"><div class="topic-title">1. HTML & CSS Fundamentals</div><div class="expand-icon">▼</div></div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 90%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation"><h4>What you'll learn:</h4><p>Master semantic HTML5, modern CSS3 including Flexbox and Grid, responsive design, accessibility principles, and CSS preprocessing with Sass/SCSS.</p></div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type pdf">PDF</span><h4>HTML5 & CSS3 Complete Guide</h4><p>Comprehensive reference covering modern HTML and CSS features with best practices.</p></div>
+                                        <div class="resource-card"><span class="resource-type video">VIDEO</span><h4>freeCodeCamp - Responsive Web Design</h4><p>Complete course on HTML, CSS, and responsive design principles with hands-on projects.</p></div>
+                                        <div class="resource-card"><span class="resource-type practice">PRACTICE</span><h4>Frontend Mentor Challenges</h4><p>Real-world design challenges to practice HTML/CSS skills with professional designs.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)"><div class="topic-title">2. JavaScript & DOM Manipulation</div><div class="expand-icon">▼</div></div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 75%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation"><h4>What you'll learn:</h4><p>Master JavaScript fundamentals, ES6+ features, DOM manipulation, event handling, asynchronous programming with promises and async/await, and modern JavaScript tools.</p></div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type pdf">PDF</span><h4>JavaScript: The Definitive Guide</h4><p>Comprehensive JavaScript reference covering language features and web APIs.</p></div>
+                                        <div class="resource-card"><span class="resource-type video">VIDEO</span><h4>JavaScript30 - Vanilla JS Challenges</h4><p>30 day challenge building real projects with pure JavaScript.</p></div>
+                                        <div class="resource-card"><span class="resource-type course">COURSE</span><h4>Modern JavaScript Bootcamp</h4><p>Complete JavaScript course covering ES6+, modules, bundlers, and modern development.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)"><div class="topic-title">3. Frontend Frameworks (React/Vue/Angular)</div><div class="expand-icon">▼</div></div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation"><h4>What you'll learn:</h4><p>Master modern frontend frameworks including React with hooks, Vue.js, or Angular. Learn component-based architecture, state management, routing, and testing.</p></div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type video">VIDEO</span><h4>React - The Complete Guide</h4><p>Comprehensive React course covering hooks, context, Redux, and modern patterns.</p></div>
+                                        <div class="resource-card"><span class="resource-type course">COURSE</span><h4>Vue.js Masterclass</h4><p>Complete Vue.js course with Vuex, Vue Router, and Nuxt.js for full-stack applications.</p></div>
+                                        <div class="resource-card"><span class="resource-type practice">PRACTICE</span><h4>Frontend Framework Projects</h4><p>Build 10 real-world projects using React, Vue, or Angular with modern tooling.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)"><div class="topic-title">4. Backend Development (Node.js/Python/PHP)</div><div class="expand-icon">▼</div></div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 50%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation"><h4>What you'll learn:</h4><p>Master server-side programming with Node.js, Python (Django/Flask), or PHP. Learn API development, authentication, middleware, and server deployment.</p></div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type course">COURSE</span><h4>Node.js - Complete Developer Course</h4><p>Full Node.js course covering Express.js, MongoDB, authentication, and deployment.</p></div>
+                                        <div class="resource-card"><span class="resource-type video">VIDEO</span><h4>Python Django Full Stack</h4><p>Build full-stack web applications with Python Django and React.</p></div>
+                                        <div class="resource-card"><span class="resource-type practice">PRACTICE</span><h4>REST API Development</h4>
+                                        <p>Practice creating robust RESTful APIs with authentication and data validation.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Structures & Algorithms Stream -->
+                    <div id="data-structures-stream" class="streams-container">
+                        <button class="back-button" onclick="backToMajor('computer-science')">← Back to Computer Science</button>
+                        <h3 style="color: #333; margin-bottom: 2rem;">Data Structures & Algorithms Learning Path</h3>
+                        <div class="roadmap-path">
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)"><div class="topic-title">1. Complexity Analysis & Big O</div><div class="expand-icon">▼</div></div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 95%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation"><h4>What you'll learn:</h4><p>Understand how to measure algorithm performance. Master Big O, Omega, and Theta notations for time and space complexity analysis.</p></div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type video">VIDEO</span><h4>Big O Notation - Simply Explained</h4><p>An intuitive video guide to understanding algorithm complexity and Big O notation.</p></div>
+                                        <div class="resource-card"><span class="resource-type practice">PRACTICE</span><h4>Complexity Analysis Problems</h4><p>Analyze the time and space complexity of various code snippets and algorithms.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)"><div class="topic-title">2. Core Data Structures</div><div class="expand-icon">▼</div></div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 80%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation"><h4>What you'll learn:</h4><p>Implement and use fundamental data structures: Arrays, Linked Lists (Singly, Doubly), Stacks, and Queues. Understand their trade-offs.</p></div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type course">COURSE</span><h4>Data Structures in C++/Java/Python</h4><p>In-depth course covering implementation and usage of core data structures.</p></div>
+                                        <div class="resource-card"><span class="resource-type practice">PRACTICE</span><h4>LeetCode - Easy Problems</h4><p>Practice solving problems involving arrays, linked lists, stacks, and queues on LeetCode.</p></div>
+                                        <div class="resource-card"><span class="resource-type notes">NOTES</span><h4>Data Structures Cheat Sheet</h4><p>A quick reference guide for operations and complexities of common data structures.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI & Machine Learning Stream -->
+                    <div id="ai-ml-stream" class="streams-container">
+                        <button class="back-button" onclick="backToMajor('computer-science')">← Back to Computer Science</button>
+                        <h3 style="color: #333; margin-bottom: 2rem;">AI & Machine Learning Learning Path</h3>
+                        <div class="roadmap-path">
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)"><div class="topic-title">1. Math for Machine Learning</div><div class="expand-icon">▼</div></div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 80%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation"><h4>What you'll learn:</h4><p>Build a strong foundation in Linear Algebra, Calculus, Probability, and Statistics—the mathematical bedrock of ML.</p></div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type course">COURSE</span><h4>Mathematics for Machine Learning Specialization</h4><p>Coursera's specialization covering all the necessary mathematical concepts for ML.</p></div>
+                                        <div class="resource-card"><span class="resource-type video">VIDEO</span><h4>3Blue1Brown - Essence of Linear Algebra</h4><p>Intuitive, visual explanations of core linear algebra concepts.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="topic-section">
+                                <div class="topic-header" onclick="toggleTopic(this)"><div class="topic-title">2. Supervised & Unsupervised Learning</div><div class="expand-icon">▼</div></div>
+                                <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
+                                <div class="topic-details">
+                                    <div class="explanation"><h4>What you'll learn:</h4><p>Master classic ML algorithms like Linear/Logistic Regression, SVM, Decision Trees, K-Means Clustering, and PCA using libraries like Scikit-learn.</p></div>
+                                    <div class="resources">
+                                        <div class="resource-card"><span class="resource-type course">COURSE</span><h4>Machine Learning by Andrew Ng</h4><p>The legendary Stanford course that provides a broad introduction to machine learning.</p></div>
+                                        <div class="resource-card"><span class="resource-type practice">PRACTICE</span><h4>Kaggle Competitions - Beginner</h4><p>Apply your skills to real-world datasets in beginner-friendly Kaggle competitions.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cybersecurity Stream -->
+                    <div id="cybersecurity-stream" class="streams-container">
+                        <button class="back-button" onclick="backToMajor('computer-science')">← Back to Computer Science</button>
+                        <h3 style="color: #333; margin-bottom: 2rem;">Cybersecurity Learning Path</h3>
+                        <h4 style="color: #6c757d; text-align: center; padding: 2rem 0;">Cybersecurity roadmap is under construction.</h4>
+                    </div>
+
+                    <!-- System Design Stream -->
+                    <div id="system-design-stream" class="streams-container">
+                        <button class="back-button" onclick="backToMajor('computer-science')">← Back to Computer Science</button>
+                        <h3 style="color: #333; margin-bottom: 2rem;">System Design Learning Path</h3>
+                        <h4 style="color: #6c757d; text-align: center; padding: 2rem 0;">System Design roadmap is under construction.</h4>
+                    </div>
+                </div>
+
+                <div id="electrical" class="roadmap-content">
+                    <h3 style="color: #6c757d; text-align: center; padding: 4rem 0;">Electrical Engineering roadmap is under construction. Check back soon!</h3>
+                </div>
+                <div id="mechanical" class="roadmap-content">
+                    <h3 style="color: #6c757d; text-align: center; padding: 4rem 0;">Mechanical Engineering roadmap is under construction. Check back soon!</h3>
+                </div>
+                <div id="civil" class="roadmap-content">
+                    <h3 style="color: #6c757d; text-align: center; padding: 4rem 0;">Civil Engineering roadmap is under construction. Check back soon!</h3>
+                </div>
+                <div id="chemical" class="roadmap-content">
+                    <h3 style="color: #6c757d; text-align: center; padding: 4rem 0;">Chemical Engineering roadmap is under construction. Check back soon!</h3>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <script>
+        function scrollToRoadmaps() {
+            document.getElementById('roadmaps').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showRoadmap(roadmapId) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.roadmap-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`.tab[onclick="showRoadmap('${roadmapId}')"]`).classList.add('active');
+            document.getElementById(roadmapId).classList.add('active');
+            
+            backToMajor(roadmapId);
+        }
+
+        function toggleTopic(headerElement) {
+            const details = headerElement.nextElementSibling.nextElementSibling; // Skips progress-bar
+            const icon = headerElement.querySelector('.expand-icon');
+            
+            if (details.classList.contains('expanded')) {
+                details.classList.remove('expanded');
+                icon.classList.remove('expanded');
+            } else {
+                details.classList.add('expanded');
+                icon.classList.add('expanded');
+            }
+        }
+
+        function showStream(streamId) {
+            const majorContent = document.querySelector('.roadmap-content.active');
+            if (!majorContent) return;
+
+            const specializationGrid = majorContent.querySelector('.specialization-grid');
+            const streamContainer = document.getElementById(`${streamId}-stream`);
+
+            if (specializationGrid && streamContainer) {
+                specializationGrid.style.display = 'none';
+                majorContent.querySelectorAll('.streams-container').forEach(sc => sc.classList.remove('active'));
+                streamContainer.classList.add('active');
+            }
+        }
+
+        function backToMajor(majorId) {
+            const majorContent = document.getElementById(majorId);
+            if (!majorContent) return;
+
+            const specializationGrid = majorContent.querySelector('.specialization-grid');
+            
+            majorContent.querySelectorAll('.streams-container').forEach(sc => sc.classList.remove('active'));
+            
+            if (specializationGrid) {
+                specializationGrid.style.display = 'grid';
+            }
+        }
+    </script>
+</body>
+</html>
